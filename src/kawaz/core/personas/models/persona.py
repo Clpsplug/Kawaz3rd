@@ -221,3 +221,16 @@ add_permission_logic(Persona, PersonaPermissionLogic())
 from ..activities.persona import PersonaActivityMediator
 from activities.registry import registry
 registry.register(Persona, PersonaActivityMediator())
+
+from django.contrib.auth.signals import user_logged_in, user_logged_out
+from django.dispatch import receiver
+
+@receiver(user_logged_in, sender=Persona)
+def post_login_message(sender, request, user, **kwargs):
+    from django.contrib import messages
+    messages.add_message(request, messages.SUCCESS, _('Logged in to the account'))
+
+@receiver(user_logged_out, sender=Persona)
+def post_logout_message(sender, request, user, **kwargs):
+    from django.contrib import messages
+    messages.add_message(request, messages.SUCCESS, _('Logged out of the account'))
