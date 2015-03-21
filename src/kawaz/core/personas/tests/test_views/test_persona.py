@@ -13,7 +13,6 @@ from ..factories import ProfileFactory
 
 BASE_URL = 'members'
 
-
 class PersonaViewTestCaseBase(TestCase):
     def setUp(self):
         # Profileを持たない場合はメンバーとして認められない仕様なので
@@ -34,6 +33,24 @@ class PersonaViewTestCaseBase(TestCase):
             # user としてアクセスするためにログイン
             self.assertTrue(self.client.login(username=user.username,
                                               password='password'))
+
+
+class PersonaLoginViewTestCase(PersonaViewTestCaseBase):
+    def test_post_message_after_login(self):
+        """ログイン後にログイン成功のメッセージが表示される"""
+        for user in self.members:
+            r = self.prefer_login(user)
+            self.assertIn('messages', r.cookies)
+
+
+class PersonaLogoutViewTestCase(PersonaViewTestCaseBase):
+    def test_post_message_after_logout(self):
+        """ログアウト後にログアウト成功のメッセージが表示される"""
+        for user in self.members:
+            self.prefer_login(user)
+            r = self.client.logout()
+            self.assertIn('messages', r.cookies)
+
 
 class PersonaDetailViewTestCase(PersonaViewTestCaseBase):
 

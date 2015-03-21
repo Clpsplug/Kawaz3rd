@@ -6,6 +6,7 @@ from django.db import models
 from django.db.models.base import ModelBase
 from django.contrib.auth.models import AbstractUser
 from django.contrib.auth.models import BaseUserManager
+from django.contrib import messages
 from django.utils import timezone
 from django.utils.translation import ugettext_lazy as _
 from django.core.exceptions import ValidationError
@@ -227,10 +228,8 @@ from django.dispatch import receiver
 
 @receiver(user_logged_in, sender=Persona)
 def post_login_message(sender, request, user, **kwargs):
-    from django.contrib import messages
     messages.add_message(request, messages.SUCCESS, _('Logged in to the account'))
 
 @receiver(user_logged_out, sender=Persona)
 def post_logout_message(sender, request, user, **kwargs):
-    from django.contrib import messages
     messages.add_message(request, messages.SUCCESS, _('Logged out of the account'))
